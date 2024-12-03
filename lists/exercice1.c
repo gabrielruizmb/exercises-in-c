@@ -17,43 +17,43 @@ de repetições. */
 #include<stdio.h>
 #include<stdlib.h>
 #include<stdbool.h>
-#define size 10
+#define tamanho 10
 
 typedef struct
 {
-    int key;
-    float price;
-} Product;
+    int chave;
+    float preco;
+} Produto;
 
 typedef struct
 {
-    Product products[size];
-    int quantity;
-} List;
+    Produto produtos[tamanho];
+    int validos;
+} Lista;
 
-void startList();
-void mainMenu();
-void insertProduct();
+void iniciarLista();
+void menuPrincipal();
+void inserirProduto();
+int validarChave();
 
 int main()
 {
-    List l;
+    Lista lista;
+    iniciarLista(&lista);
 
-    startList(&l);
-
-    mainMenu();
+    menuPrincipal(&lista);
 
     return 0;
 }
 
-void startList(List *l)
+void iniciarLista(Lista *lista)
 {
-    l->quantity = 0;
+    lista->validos = 0;
 }
 
-void mainMenu()
+void menuPrincipal(Lista *lista)
 {
-    int choice = -1;
+    int escolha = -1;
 
     system("clear");
 
@@ -63,28 +63,42 @@ void mainMenu()
 
     while(true)
     { 
-        scanf("%d", &choice);
-
-        switch(choice)
+	printf("Escolha uma opção: ");
+        scanf("%d", &escolha);
+        
+        switch(escolha)
         {
-            case 0: exit(0);    	break;
-	    case 1: insertProduct();    break;
+            case 0: exit(0);          	       break;
+	    case 1: inserirProduto(&lista);    break;
 
-            default: printf("Opção inválida. Escolha entre 0 e 5!");
+            default: printf("Opção inválida. Escolha entre 0 e 5!\n");
     	}
     }
 }
 
-void insertProduct()
+void inserirProduto(Lista *lista)
 {
-    Product newProduct;
-     
+    Produto produto;
+    produto.chave = 0;
+    produto.preco = -1;
+    
     printf("Informe a chave do novo produto: ");
-    scanf("%d", &newProduct.key);
+    scanf("%d", &produto.chave);
+
     printf("Informe o preço deste produto: ");
-    scanf("%f", &newProduct.price);
+    while(produto.preco < 0)
+    {
+        scanf("%f", &produto.preco);
+	if(produto.preco < 0)
+	    printf("Informe um preço válido: ");
+    }
 
-    printf("%d %f", newProduct.key, newProduct.price);
+    validarChave(&lista);
 
-    mainMenu();
+    printf("%d %f", produto.chave, produto.preco);
+}
+
+int validarChave(Lista *lista)
+{
+    return -1;
 }
