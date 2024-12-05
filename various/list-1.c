@@ -1,32 +1,34 @@
 #include<stdio.h>
+#include<stdlib.h>
 #include<stdbool.h>
-#define n 10
+#define tamanho 10
 
 typedef int tipoChave;
 
 typedef struct
 {
-    tipoChave ch;
-} Registro;
+    tipoChave chave;
+    float preco;
+} Produto;
 
 typedef struct
 {
-    Registro R[n];
-    int nroElem;
+    Produto produtos[tamanho];
+    int quantidade;
 } Lista;
 
-void inicializarLista(Lista *l)
+void inicializarLista(Lista *lista)
 {
-    l->nroElem = 0;
+    lista->quantidade = 0;
 }
 
-int verificarChave(Lista *l, tipoChave ch)
+int buscarPosicaoPorChave(Lista *lista, tipoChave chave)
 {
     int i = 0;
 
-    while(i < l->nroElem)
+    while(i < lista->quantidade)
     {
-        if(ch == l->R[i])
+        if(chave == lista->produtos[i].chave)
 	{
 	    return i;
 	}
@@ -36,23 +38,77 @@ int verificarChave(Lista *l, tipoChave ch)
     return -1;
 }
 
-int contarClientes(Lista *l)
+int contarRegistros(Lista *lista)
 {
-    return l->nroElem;
+    return lista->quantidade;
 }
 
-void exibirLista(Lista *l)
+void exibirLista(Lista *lista)
 {
-    for(int i = 0; i < l->nroElem; i++)
+    for(int i = 0; i < lista->quantidade; i++)
     {
-        printf("%d", l->R[i].ch);
+        printf("%d %f", lista->produtos[i].chave, lista->produtos[i].preco);
     }
+}
+
+bool inserirProdutoNaLista(Lista *lista, Produto produto, int posicao)
+{
+    if(posicao < 0 || posicao > lista->quantidade || lista->quantidade == tamanho)
+    {
+        printf("Posição inválida!");
+	return false;
+    }
+     
+    if(buscarPosicaoPorChave(lista, produto.chave) != -1)
+    {
+	printf("Esta chave já está sendo usada!");
+	return false;
+    }
+
+    for(int j = lista->quantidade; j > posicao; j--)
+    {
+        lista->produtos[j] = lista->produtos[j--];
+    }
+    lista->produtos[posicao] = produto;
+    lista->quantidade++;
+
+    printf("Produto inserido!");
+    return true;    
+}
+
+void limparTela()
+{
+    #ifdef __linux__
+	system("clear");
+
+    #elif _WIN32
+	system("cls");
+
+    #endif
 }
 
 int main()
 {
-    Lista l1;
-    inicializarLista(&l1);    
+    limparTela();
+
+    Lista lista;
+    inicializarLista(&lista);
+
+    Produto produto;
+    produto.chave = 103;
+    produto.preco = 1.50;
+    
+    Produto produto2;
+    produto2.chave = 103;
+    produto2.preco = 2.50;
+
+    printf("%d %f", produto.chave, produto.preco);
+    printf("%d %f", produto2.chave, produto2.preco);
+   
+    int posicao = 0;
+    inserirProdutoNaLista(&lista, produto, posicao);
+    posicao = 1;
+    inserirProdutoNaLista(&lista, produto2, posicao);
 
     return 0;
 }

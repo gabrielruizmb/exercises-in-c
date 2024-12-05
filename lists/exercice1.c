@@ -34,7 +34,7 @@ typedef struct
 void iniciarLista();
 void menuPrincipal();
 void inserirProduto();
-int validarChave();
+int buscarProduto();
 
 int main()
 {
@@ -53,7 +53,7 @@ void iniciarLista(Lista *lista)
 
 void menuPrincipal(Lista *lista)
 {
-    int escolha = -1;
+    int escolha = 0;
 
     system("clear");
 
@@ -80,25 +80,38 @@ void inserirProduto(Lista *lista)
 {
     Produto produto;
     produto.chave = 0;
-    produto.preco = -1;
+    produto.preco = 0;
     
     printf("Informe a chave do novo produto: ");
     scanf("%d", &produto.chave);
 
     printf("Informe o preço deste produto: ");
-    while(produto.preco < 0)
+    while(produto.preco <= 0)
     {
         scanf("%f", &produto.preco);
-	if(produto.preco < 0)
+	if(produto.preco <= 0)
 	    printf("Informe um preço válido: ");
     }
 
-    validarChave(&lista);
-
+    if(buscarProduto(&lista, produto.chave) == -1)
+    {
+        lista->produtos[lista->validos].chave = produto.chave;
+	lista->produtos[lista->validos].preco = produto.preco;
+	lista->validos++;
+	printf("Produto cadastrado com sucesso!");
+    } else printf("Este produto já está cadastrado!");
+    
     printf("%d %f", produto.chave, produto.preco);
 }
 
-int validarChave(Lista *lista)
+int buscarProduto(Lista *lista, int chave)
 {
+    int i = 0;
+    while(i < lista->validos)
+    {
+        if(chave == lista->produtos[i].chave) {return i;}
+	else {i++;}
+    }
+
     return -1;
 }
